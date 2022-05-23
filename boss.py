@@ -19,5 +19,7 @@ def greetings():
         audio("Good Evening sir!")
     audio("This is the boss here. How may i help you, sir?")
 if __name__=="__main__":
-
+    print(
+        "hello"
+    )
     greetings()

@@ -1,15 +1,17 @@
-import imp
+import smtplib
 from unittest import result
 import pyttsx3
 import datetime
 import speech_recognition as speech
 import wikipedia
 import webbrowser
-
+import random  
+import os
 engine=pyttsx3.init('sapi5') #API for microsoft speech
 voices=engine.getProperty('voices')
 # print(voice[1].id)
 engine.setProperty('voice',voices[0].id)
+
 
 def audio(sound): #generate computer audio
     engine.say(sound)
@@ -45,7 +47,13 @@ def greetings():
         audio("Good Evening sir!")
     audio("This is the boss here. How may i help you, sir?")
 
-
+def sendEmail(address,content):
+    server=smtplib.SMTP('smtp.gmail.com',587)
+    server.ehlo()
+    server.starttls()
+    server.login('username','password')
+    server.sendmail('username')
+    server.close()
 if __name__=="__main__":
     greetings()
     while True:
@@ -54,9 +62,8 @@ if __name__=="__main__":
         if 'wikipedia' in query:
             audio("Boss is searching from wikipedia...")
             query=query.replace("wikipedia","")
-            results=wikipedia.summary(query,sentences=2)
+            results=wikipedia.summary(query,sentences=1)
             audio("According to wikipedia")
-            print(results)
             audio(results)
         elif 'open youtube' in query:
             audio("Opening Youtube!")
@@ -78,5 +85,24 @@ if __name__=="__main__":
         elif 'facebook' in query:
             audio("Opening facebook")
             webbrowser.open("facebook.com") 
-        
-
+        elif 'play a music' in query:
+            music_directory='E:\\music mobile'
+            songList=os.listdir(music_directory)
+            randomNumber=random.randint(0,len(songList)-1)
+            os.startfile(os.path.join(music_directory,songList[randomNumber]))  #starts playing a random music from the directory
+        elif 'time' in query:
+            time=datetime.datetime.now().strftime("%H: %M: %S")
+            audio(f"It is {time} now")
+        elif 'open android studio' in query:
+            path = "C:\\Program Files\\Android\\Android Studio\\bin\\studio64.exe"
+            os.startfile(path)
+        elif 'send an email' in query:
+            try:
+                audio("what should I mail them?")
+                message=listeningCommands()
+                print(message)
+                emailAdress='toemailaddress'
+                sendEmail(emailAdress,message)
+                audio("The email has been sent!")
+            except Exception  as e:
+                audio("Sorry, Email couldn't be sent!")
